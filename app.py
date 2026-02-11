@@ -1,43 +1,28 @@
 import streamlit as st
-
-# Page configuration
-st.set_page_config(
-    page_title="My Streamlit App",
-    page_icon="🚀",
-    layout="wide"
-)
-
-# Title
-st.title("🚀 My Streamlit App")
-
-# Sidebar
-st.sidebar.header("Settings")
-name = st.sidebar.text_input("Enter your name", "")
-age = st.sidebar.slider("Select your age", 0, 100, 25)
-
-# Main content
-st.header("Welcome Section")
-
-if name:
-    st.success(f"Hello {name}! You are {age} years old.")
-else:
-    st.info("Please enter your name in the sidebar.")
-
-# Button example
-if st.button("Click Me"):
-    st.balloons()
-    st.write("Button clicked!")
-
-# Data example
-st.header("Sample Data")
-
-import pandas as pd
 import numpy as np
+import joblib
 
-data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=["Column 1", "Column 2", "Column 3"]
-)
+# Load trained model
+model = joblib.load("model.pkl")
 
-st.dataframe(data)
-st.line_chart(data)
+# Page config
+st.set_page_config(page_title="Forest Fire Prediction", page_icon="🔥")
+
+st.title("🔥 Forest Fire Prediction App")
+st.write("Enter environmental details to predict forest fire risk.")
+
+# Input fields
+temperature = st.number_input("Temperature (°C)", min_value=0.0)
+humidity = st.number_input("Humidity (%)", min_value=0.0)
+wind_speed = st.number_input("Wind Speed (km/h)", min_value=0.0)
+rainfall = st.number_input("Rainfall (mm)", min_value=0.0)
+
+# Predict button
+if st.button("Predict"):
+    input_data = np.array([[temperature, humidity, wind_speed, rainfall]])
+    prediction = model.predict(input_data)
+
+    if prediction[0] == 1:
+        st.error("🔥 High Risk of Forest Fire!")
+    else:
+        st.success("🌿 Low Risk of Forest Fire")
